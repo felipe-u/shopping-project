@@ -103,13 +103,6 @@ exports.postCart = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    pageTitle: "Your Orders",
-    path: "/orders",
-  });
-};
-
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
@@ -123,6 +116,19 @@ exports.postCartDeleteProduct = (req, res, next) => {
     })
     .then((result) => {
       res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getOrders = (req, res, next) => {
+  req.user
+    .getOrders({ include: ["products"] })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders,
+      });
     })
     .catch((err) => console.log(err));
 };
@@ -155,11 +161,4 @@ exports.postOrder = (req, res, next) => {
       res.redirect("orders");
     })
     .catch((err) => console.log(err));
-};
-
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
-  });
 };
