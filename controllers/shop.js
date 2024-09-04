@@ -96,7 +96,7 @@ exports.postOrder = (req, res, next) => {
     .populate("cart.items.product")
     .then((user) => {
       const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: i.product };
+        return { quantity: i.quantity, product: { ...i.product._doc } };
       });
       const order = new Order({
         user: {
