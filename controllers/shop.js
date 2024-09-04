@@ -44,18 +44,12 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then((cart) => {
-      console.log(cart);
-      return cart
-        .getProducts()
-        .then((products) => {
-          res.render("shop/cart", {
-            pageTitle: "Your Cart",
-            path: "/cart",
-            products: products,
-          });
-        })
-        .catch((err) => console.log(err));
+    .then((products) => {
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: products,
+      });
     })
     .catch((err) => console.log(err));
 };
