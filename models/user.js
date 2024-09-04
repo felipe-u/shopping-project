@@ -7,7 +7,7 @@ class User {
   constructor(username, email, cart, id) {
     this.username = username;
     this.email = email;
-    this.cart = cart ? cart : (cart = { items: [] });
+    this.cart = cart; // {items: []}
     this._id = id;
   }
 
@@ -18,7 +18,8 @@ class User {
 
   getCart() {
     const db = getDb();
-    const productIds = this.cart.items.map((i) => {
+    const items = this.cart?.items ?? [];
+    const productIds = items.map((i) => {
       return i.productId;
     });
     return db
@@ -29,7 +30,7 @@ class User {
         return products.map((p) => {
           return {
             ...p,
-            quantity: this.cart.items.find((i) => {
+            quantity: items.find((i) => {
               return i.productId.toString() === p._id.toString();
             }).quantity,
           };
@@ -38,14 +39,15 @@ class User {
   }
 
   addToCart(product) {
-    const cartProductIndex = this.cart.items.findIndex((cartP) => {
+    const items = this.cart?.items ?? [];
+    const cartProductIndex = items.findIndex((cartP) => {
       return cartP.productId.toString() === product._id.toString();
     });
     let newQuantity = 1;
-    const updatedCartItems = [...this.cart.items];
+    const updatedCartItems = [...items];
 
     if (cartProductIndex >= 0) {
-      newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+      newQuantity = items[cartProductIndex].quantity + 1;
       updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
       updatedCartItems.push({
